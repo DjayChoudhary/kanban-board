@@ -23,12 +23,22 @@ function Board() {
           className="flex-auto w-full flex flex-col gap-2"
           onDragOver={handleDragOver}
           onDrop={handleTaskDrop}
+          onDragLeave={(e) => {
+            console.log("leaveing");
+            console.log(e.target);
+          }}
+          onDragEnter={(e) => {
+            console.log("entering");
+            console.log(e.target);
+          }}
         >
           <span
             className="border-2 w-full bg-yellow-200 rounded-md p-2"
             id="task-1"
             draggable
             onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
+              e.dataTransfer.effectAllowed = "move";
+
               e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
             }}
           >
