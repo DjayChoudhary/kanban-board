@@ -1,22 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-interface WorkItemState {
+type WorkItemState = {
   id: string;
   title: string;
   description: string;
   color: "red" | "yellow" | "green" | "blue";
   status: "todo" | "in-progress" | "completed";
-}
+};
 
-interface User {
+type User = {
   id: string;
   username: string;
-}
+};
 
-interface WorkItemsState {
+type WorkItemsState = {
   workitems: WorkItemState[];
   user: User;
-}
+};
 
 const initialWorkItems: WorkItemState[] = [
   {
@@ -61,7 +61,25 @@ export const workItemSlice = createSlice({
   name: "workitem",
   initialState,
   reducers: {
-    createWorkItem: (state, action) => {},
+    createWorkItem: (state, action: PayloadAction<WorkItemState>) => {
+      state.workitems.push(action.payload);
+    },
+    deleteWorkItem: (state, action: PayloadAction<string>) => {
+      state.workitems = state.workitems.filter(
+        (workitem) => workitem.id === action.payload
+      );
+    },
+    updateWorkItemStatus: (
+      state,
+      action: PayloadAction<Pick<WorkItemState, "id" | "status">>
+    ) => {
+      const workitem = state.workitems.find(
+        (workitem) => workitem.id === action.payload.id
+      );
+      if (workitem && action.payload.status) {
+        workitem.status = action.payload.status;
+      }
+    },
   },
 });
 
