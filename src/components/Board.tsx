@@ -1,8 +1,15 @@
 "use client";
 
+import { useWorkItemDispatch, useWorkItemSelector } from "@/redux/hooks";
+import { WorkItemState } from "@/redux/slices/workItemSlice";
 import React from "react";
 
 function Board() {
+  const workItems = useWorkItemSelector(
+    (state) => state.workitemsReducer.workitems
+  );
+  const dispatch = useWorkItemDispatch();
+
   function handleDragOver(event: React.DragEvent<HTMLElement>) {
     event.preventDefault();
     const section = event.target as HTMLElement;
@@ -32,52 +39,9 @@ function Board() {
             console.log(e.target);
           }}
         >
-          <span
-            className="border-2 w-full bg-yellow-200 rounded-md p-2"
-            id="task-1"
-            draggable
-            onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
-              e.dataTransfer.effectAllowed = "move";
-
-              e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
-            }}
-          >
-            {" "}
-            Draggable 1
-          </span>
-          <span
-            className="border-2 w-full bg-blue-200 rounded-md p-2"
-            id="task-2"
-            draggable
-            onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
-              e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
-            }}
-          >
-            {" "}
-            Draggable 2
-          </span>
-          <span
-            className="border-2 w-full bg-green-200 rounded-md p-2"
-            id="task-3"
-            draggable
-            onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
-              e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
-            }}
-          >
-            {" "}
-            Draggable 3
-          </span>
-          <span
-            className="border-2 w-full bg-red-200 rounded-md p-2"
-            id="task-4"
-            draggable
-            onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
-              e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
-            }}
-          >
-            {" "}
-            Draggable 4
-          </span>
+          {workItems.map((workItem) => (
+            <WorkItem key={workItem.id} workItem={workItem} />
+          ))}
         </section>
       </section>
       <section className="border-2 border-gray-200 bg-gray-50 rounded-md  h-full flex flex-col gap-2  p-2">
@@ -101,6 +65,23 @@ function Board() {
         ></section>
       </section>
     </section>
+  );
+}
+
+function WorkItem({ workItem }: { workItem: WorkItemState }) {
+  return (
+    <span
+      className={`border-2 w-full rounded-md p-2 ${workItem.color}`}
+      id={workItem.id}
+      draggable
+      onDragStart={(e: React.DragEvent<HTMLSpanElement>) => {
+        e.dataTransfer.effectAllowed = "move";
+
+        e.dataTransfer.setData("text", (e.target as HTMLSpanElement).id);
+      }}
+    >
+      {workItem.title}
+    </span>
   );
 }
 

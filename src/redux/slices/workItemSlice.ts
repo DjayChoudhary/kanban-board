@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
-type WorkItemState = {
+export type WorkItemState = {
   id: string;
   title: string;
   description: string;
@@ -62,6 +62,9 @@ export const workItemSlice = createSlice({
   initialState,
   reducers: {
     createWorkItem: (state, action: PayloadAction<WorkItemState>) => {
+      console.log("create work item called with: ");
+      console.log(action);
+
       state.workitems.push(action.payload);
     },
     deleteWorkItem: (state, action: PayloadAction<string>) => {
@@ -83,4 +86,6 @@ export const workItemSlice = createSlice({
   },
 });
 
+export const { createWorkItem, deleteWorkItem, updateWorkItemStatus } =
+  workItemSlice.actions;
 export default workItemSlice.reducer;
